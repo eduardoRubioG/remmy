@@ -1,50 +1,52 @@
 import "react-native-gesture-handler";
-import React from "react";
-import { createStackNavigator } from "@react-navigation/stack";
-import { NavigationContainer } from "@react-navigation/native";
-import HomeScreen from "./src/HomeScreen";
-import GameScreen from "./src/GameScreen";
+import React, { Component } from "react";
+import { StyleSheet } from "react-native";
 
 import * as eva from "@eva-design/eva";
-import { ApplicationProvider } from "@ui-kitten/components";
-import { default as theme } from './theme.json';
+import { default as theme } from "./theme.json";
+import { ApplicationProvider, Layout, Text } from "@ui-kitten/components";
 
-const Stack = createStackNavigator();
+import Logo from "./src/components/Logo";
+import GameSetup from "./src/components/GameSetup.js";
 
-// Blue: #145DA0
-// Maroon: #800000
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      gameStarted: false,
+      playerCount: 2,
+      playerNames: [],
+      playerScores: [0, 0],
+      winScore: 500
+    };
 
-function App() {
-  return (
-    <ApplicationProvider {...eva} theme={{...eva.light, ...theme}}>
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerStyle: {
-              backgroundColor: "#800000",
-              shadowColor: "transparent"
-            },
-            headerTintColor: "#fff"
-          }}
-        >
-          <Stack.Screen
-            name="Home"
-            component={HomeScreen}
-            options={{
-              title: ""
-            }}
-          />
-          <Stack.Screen
-            name="Game"
-            component={GameScreen}
-            options={{
-              title: ""
-            }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </ApplicationProvider>
-  );
+    this.changePlayerCount = this.changePlayerCount.bind(this);
+  }
+
+  changePlayerCount(change) { 
+    // TODO: add alert 
+    if( (change > 0 && this.state.playerCount < 4)  || ( change < 0 && this.state.playerCount !== 2 ))
+      this.setState({playerCount: this.state.playerCount + change});
+  }
+  
+  render() {
+    return (
+      <ApplicationProvider {...eva} theme={{ ...eva.dark, ...theme }}>
+        <Layout style={styles.app__container}>
+          <Logo />
+          <GameSetup {...this.state} changePlayerCount={this.changePlayerCount}/>
+        </Layout>
+      </ApplicationProvider>
+    );
+  }
 }
+const styles = StyleSheet.create({
+  app__container: {
+    flex: 1,
+    justifyContent: "flex-start",
+    alignItems: "center",
+    paddingTop: 75
+  }
+});
 
 export default App;
