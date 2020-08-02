@@ -25,7 +25,7 @@ class App extends Component {
 
   changePlayerCount(change) { 
     // TODO: add alert 
-    if( change > 0  || ( change < 0 && this.state.playerCount !== 2 ))
+    if( (change > 0 && this.state.playerCount < 4)  || ( change < 0 && this.state.playerCount !== 2 ))
       this.setState({playerCount: this.state.playerCount + change});
   }
   
