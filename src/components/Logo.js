@@ -1,19 +1,20 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet  } from "react-native";
 import { default as theme } from "../../theme.json";
 import { Text, Divider } from "@ui-kitten/components";
 
 const Logo = () => {
+  const [easterEggModal, setEasterEggModal] = React.useState(false); 
   return (
     <React.Fragment>
-      <Text style={styles.logo} category="h4">
-        R
-        <Text style={styles.logoHighlight} category="h4">
+        <Text style={styles.logo} category="h4">
+          R
+          <Text style={styles.logoHighlight} category="h4">
           em
+          </Text>
+          my
         </Text>
-        my
-      </Text>
-      <Divider />
+        <Divider />
     </React.Fragment>
   );
 };

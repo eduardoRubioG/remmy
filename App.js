@@ -1,13 +1,13 @@
-import "react-native-gesture-handler";
 import React, { Component } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, StatusBar } from "react-native";
 
 import * as eva from "@eva-design/eva";
 import { default as theme } from "./theme.json";
-import { ApplicationProvider, Layout, Text } from "@ui-kitten/components";
+import { ApplicationProvider, Layout } from "@ui-kitten/components";
 
 import Logo from "./src/components/Logo";
 import GameSetup from "./src/components/GameSetup.js";
+import CurrentGame from "./src/components/CurrentGame.js";
 
 class App extends Component {
   constructor(props) {
@@ -15,28 +15,47 @@ class App extends Component {
     this.state = {
       gameStarted: false,
       playerCount: 2,
-      playerNames: [],
-      playerScores: [0, 0],
+      playerNames: ["", ""],
+      playerScores: [{ playerOne: 0, playerTwo: 0 }],
       winScore: 500
     };
-
-    this.changePlayerCount = this.changePlayerCount.bind(this);
+    this.saveGameSettings = this.saveGameSettings.bind(this);
+    this.toggleGameStarted = this.toggleGameStarted.bind(this);
+    console.disableYellowBox = true;
   }
 
-  changePlayerCount(change) { 
-    // TODO: add alert 
-    if( (change > 0 && this.state.playerCount < 4)  || ( change < 0 && this.state.playerCount !== 2 ))
-      this.setState({playerCount: this.state.playerCount + change});
+  toggleGameStarted() {
+    this.setState(state => ({ gameStarted: !this.state.gameStarted }));
   }
-  
+  saveGameSettings(playerOneName, playerTwoName, winScore) {
+    this.setState({
+      gameStarted: true,
+      playerNames: [playerOneName, playerTwoName],
+      winScore: winScore
+    });
+  }
+
   render() {
     return (
-      <ApplicationProvider {...eva} theme={{ ...eva.dark, ...theme }}>
-        <Layout style={styles.app__container}>
-          <Logo />
-          <GameSetup {...this.state} changePlayerCount={this.changePlayerCount}/>
-        </Layout>
-      </ApplicationProvider>
+      <>
+        <StatusBar barStyle="light-content"></StatusBar>
+        <ApplicationProvider {...eva} theme={{ ...eva.dark, ...theme }}>
+          <Layout style={styles.app__container}>
+            <Logo />
+            {this.state.gameStarted ? (
+              <CurrentGame
+                {...this.state}
+                toggleGameStarted={this.toggleGameStarted}
+              />
+            ) : (
+              <GameSetup
+                {...this.state}
+                saveGameSettings={this.saveGameSettings}
+              />
+            )}
+          </Layout>
+        </ApplicationProvider>
+      </>
     );
   }
 }
@@ -45,7 +64,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-start",
     alignItems: "center",
-    paddingTop: 75
+    paddingTop: 50
   }
 });
 

@@ -1,56 +1,105 @@
 import React from "react";
 import { StyleSheet } from "react-native";
-import { default as theme } from "../../theme.json";
 import { View } from "react-native";
-import { Input, Button, Layout, Text } from "@ui-kitten/components";
+import { Input, Button, Layout, Text, Tooltip } from "@ui-kitten/components";
+import NumberTicker from "react-native-number-ticker";
+import { default as theme } from "../../theme.json";
 
-const playerCountPostFixes = ["one's", "two's", "three's", "four's"];
-
+const playerCountPostFixes = ["one's", "two's"];
 function GameSetup(props) {
+  const [playerOneName, setPlayerOneName] = React.useState("");
+  const [playerTwoName, setPlayerTwoName] = React.useState("");
+  const [winScore, setWinScore] = React.useState(100);
+  const [ttVisible, setTtVisible] = React.useState(false);
+
+  const TooltipAnchor = () => (
+    <View style={{ width: "100%", maxHeight: 1 }}></View>
+  );
+
   return (
     <Layout style={styles.gameSetupContainer} level="3">
-
-      {/* Player counter view */}
-      <Layout style={styles.playerCountView} level="3">
-        <Layout
-          style={{ flexDirection: "row", justifyContent: "center", margin: 10 }} level="3"
-        >
-          <Text category="h4">How many players?</Text>
-        </Layout>
-        <Layout style={{ flexDirection: "row", justifyContent: "center" }} level="3">
-          <Button
-            style={styles.countButton}
-            onPress={() => props.changePlayerCount(-1)}
-          >
-            <Text style={styles.countButtonText}>-</Text>
-          </Button>
-          <Text style={styles.countText}>{props.playerCount}</Text>
-          <Button
-            style={styles.countButton}
-            onPress={() => props.changePlayerCount(1)}
-          >
-            <Text style={styles.countButtonText}>+</Text>
-          </Button>
-        </Layout>
-      </Layout>
-
       {/* Player name inputs  */}
-      <Layout style={styles.playerNameInputView} level="3">
-        {[...Array(props.playerCount)].map((x, i) => {
-          return (
-            <Input
-              style={styles.playerNameInput}
-              // status="primary"
-              placeholder={`Enter player ${playerCountPostFixes[i]} name!`}
-              key={playerCountPostFixes[i]}
-            />
-          );
-        })}
-      </Layout>
+      <View style={{ margin: 10, flex: 1, justifyContent: "center" }}>
+        <Text style={styles.header} category="h3">
+          Game Setup
+        </Text>
+        <Input
+          size="large"
+          style={{ margin: 5 }}
+          value={playerOneName}
+          placeholder={`Enter player ${playerCountPostFixes[0]} name!`}
+          onChangeText={nextValue => setPlayerOneName(nextValue)}
+        />
+        <Input
+          size="large"
+          style={{ margin: 5 }}
+          value={playerTwoName}
+          placeholder={`Enter player ${playerCountPostFixes[1]} name!`}
+          onChangeText={nextValue => setPlayerTwoName(nextValue)}
+        />
+        <Input
+          size="large"
+          style={{ margin: 5 }}
+          value={winScore}
+          placeholder={`Enter the score needed to win!`}
+          onChangeText={nextValue =>
+            setWinScore(nextValue ? parseInt(nextValue, 10) : 0)
+          }
+        />
+      </View>
 
-      <Button style={styles.mainButton} size="giant">
-        Start Game!
-      </Button>
+      {/* Tooltip */}
+      <Tooltip
+        anchor={TooltipAnchor}
+        visible={ttVisible}
+        onBackdropPress={() => setTtVisible(false)}
+      >
+        Make sure you have the game setup before you get started!
+      </Tooltip>
+
+      <View style={styles.startGameView}>
+        <View
+          style={{
+            flexDirection: "row",
+            padding: 10,
+            justifyContent: "center"
+          }}
+        >
+          <Text style={{ alignSelf: "center" }} category="h4">
+            First to{" "}
+          </Text>
+          <NumberTicker
+            style={{ marginTop: -10 }}
+            number={winScore}
+            textSize={45}
+            duration={2500}
+            textStyle={{ fontWeight: "bold", color: "white" }}
+          />
+          <Text style={{ alignSelf: "center" }} category="h4">
+            {" "}
+            Wins!
+          </Text>
+        </View>
+        <Button
+          style={styles.mainButton}
+          size="giant"
+          onPress={() => {
+            /* If any of the inputs aren't set */
+            if (
+              !playerOneName ||
+              !playerTwoName ||
+              !winScore ||
+              winScore === 0
+            ) {
+              setTtVisible(true);
+            } else {
+              props.saveGameSettings(playerOneName, playerTwoName, winScore);
+            }
+          }}
+        >
+          Start Game!
+        </Button>
+      </View>
     </Layout>
   );
 }
@@ -58,34 +107,23 @@ function GameSetup(props) {
 const styles = StyleSheet.create({
   gameSetupContainer: {
     flex: 1,
-    width: "100%",
+    width: "100%"
   },
-  playerCountView: {
-    justifyContent: "center",
-    alignContent: "center",
-    textAlignVertical: "center"
-  },
-  countButton: {
-    margin: 15
-  },
-  countButtonText: {
-    fontSize: 30
-  },
-  countText: {
+  header: {
+    width: "95%",
     alignSelf: "center",
-    fontSize: 60,
-    fontWeight: "300",
-    margin: 5
+    margin: 10,
+    textDecorationColor: theme["color-primary-600"],
+    textDecorationLine: "underline"
   },
   mainButton: {
-    marginHorizontal: 20
+    marginHorizontal: 20,
+    marginTop: 20
   },
-  playerNameInputView: { 
-    alignSelf: "center"
-  },
-  playerNameInput: {
-    width: "80%",
-    padding: 5
+  startGameView: {
+    flex: 1,
+    justifyContent: "flex-end",
+    paddingBottom: 65
   }
 });
 
