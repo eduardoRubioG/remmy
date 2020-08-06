@@ -9,7 +9,7 @@ import {
   Modal,
   StyleService
 } from "@ui-kitten/components";
-import NumberTicker from "react-native-number-ticker";
+import NumberTicker from "../components/NumberTicket"
 import { StyleSheet, View, KeyboardAvoidingView } from "react-native";
 import { default as theme } from "../../theme.json";
 

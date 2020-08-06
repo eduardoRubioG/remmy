@@ -17,10 +17,13 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "EduardoIOS",
+      "buildNumber": "1.0.0"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": "A little app for the Rummy card game I made for Emily",
+    "githubUrl": "https://github.com/eduardoRubioG/remmy"
   }
 }
