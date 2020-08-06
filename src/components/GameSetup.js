@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet } from "react-native";
 import { View } from "react-native";
 import { Input, Button, Layout, Text, Tooltip } from "@ui-kitten/components";
-import NumberTicker from "react-native-number-ticker";
+import NumberTicker from "../components/NumberTicket"
 import { default as theme } from "../../theme.json";
 
 const playerCountPostFixes = ["one's", "two's"];
